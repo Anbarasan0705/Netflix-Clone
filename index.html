@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Getflix</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#111;
+      color:white;
+    }
+
+    /* NAVBAR */
+
+    .navbar{
+      position:fixed;
+      top:0;
+      width:100%;
+      padding:20px 50px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:100;
+      background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    }
+
+    .logo{
+      color:#e50914;
+      font-size:38px;
+      font-weight:bold;
+      letter-spacing:2px;
+      cursor:pointer;
+    }
+
+    /* SEARCH BAR */
+
+    .search-box{
+      padding:10px 15px;
+      border:none;
+      outline:none;
+      border-radius:5px;
+      width:250px;
+      background:#222;
+      color:white;
+      font-size:14px;
+    }
+
+    /* PROFILE MENU */
+
+    .profile-menu{
+      position:relative;
+    }
+
+    .avatar{
+      width:35px;
+      border-radius:4px;
+      cursor:pointer;
+    }
+
+    .dropdown{
+      position:absolute;
+      top:45px;
+      right:0;
+      background:#222;
+      width:160px;
+      border-radius:5px;
+      display:none;
+      overflow:hidden;
+      box-shadow:0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .dropdown p{
+      padding:12px;
+      cursor:pointer;
+      transition:0.3s;
+      border-bottom:1px solid #333;
+    }
+
+    .dropdown p:hover{
+      background:#333;
+    }
+
+    .profile-menu:hover .dropdown{
+      display:block;
+    }
+
+    /* POPUP PAGES */
+
+    .popup-page{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.85);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    .popup-content{
+      background:#222;
+      padding:40px;
+      border-radius:10px;
+      text-align:center;
+      width:350px;
+    }
+
+    .popup-content h1{
+      margin-bottom:20px;
+    }
+
+    .popup-content p{
+      margin:15px 0;
+      color:#ddd;
+    }
+
+    .popup-content button{
+      margin-top:20px;
+      padding:10px 25px;
+      border:none;
+      border-radius:5px;
+      background:#e50914;
+      color:white;
+      cursor:pointer;
+    }
+
+    .profile-avatar{
+      width:80px;
+      border-radius:10px;
+      margin-bottom:20px;
+    }
+
+    /* BANNER */
+
+    .banner{
+      height:90vh;
+      background-image:
+      linear-gradient(to top, #111, transparent),
+      url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1974&auto=format&fit=crop');
+
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      align-items:center;
+      padding-left:50px;
+    }
+
+    .banner-content{
+      max-width:500px;
+    }
+
+    .banner-title{
+      font-size:60px;
+      font-weight:bold;
+      margin-bottom:20px;
+    }
+
+    .banner-description{
+      line-height:1.5;
+      margin-bottom:20px;
+      color:#ddd;
+    }
+
+    .banner-buttons button{
+      padding:12px 30px;
+      margin-right:10px;
+      border:none;
+      border-radius:5px;
+      font-size:16px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .play-btn{
+      background:white;
+      color:black;
+    }
+
+    .info-btn{
+      background:rgba(109,109,110,0.7);
+      color:white;
+    }
+
+    .banner-buttons button:hover{
+      opacity:0.8;
+    }
+
+    /* MOVIE ROWS */
+
+    .row{
+      margin-left:20px;
+      margin-top:20px;
+    }
+
+    .row h2{
+      margin-bottom:15px;
+    }
+
+    .row-posters{
+      display:flex;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:10px 0;
+    }
+
+    .row-posters::-webkit-scrollbar{
+      display:none;
+    }
+
+    .poster{
+      width:220px;
+      margin-right:10px;
+      border-radius:5px;
+      transition:transform 0.3s;
+      cursor:pointer;
+    }
+
+    .poster:hover{
+      transform:scale(1.08);
+    }
+
+    /* FOOTER */
+
+    footer{
+      text-align:center;
+      padding:30px;
+      margin-top:40px;
+      color:#888;
+      font-size:14px;
+    }
+
+    /* MOBILE */
+
+    @media(max-width:768px){
+
+      .navbar{
+        padding:15px 20px;
+        flex-direction:column;
+        gap:15px;
+      }
+
+      .banner{
+        padding-left:20px;
+      }
+
+      .banner-title{
+        font-size:40px;
+      }
+
+      .banner-description{
+        font-size:14px;
+      }
+
+      .poster{
+        width:150px;
+      }
+
+      .search-box{
+        width:100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+  <div class="navbar">
+
+    <h1 class="logo">GETFLIX</h1>
+
+    <input
+      type="text"
+      class="search-box"
+      placeholder="Search movies..."
+    >
+
+    <div class="profile-menu">
+
+      <img
+        class="avatar"
+        src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+        alt=""
+      >
+
+      <div class="dropdown">
+
+        <p onclick="profilePage()">Profile</p>
+
+        <p onclick="settingsPage()">Settings</p>
+
+        <p onclick="logout()">Logout</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PROFILE PAGE -->
+
+  <div id="profile-page" class="popup-page">
+
+    <div class="popup-content">
+
+      <h1>Profile</h1>
+
+      <img
+        class="profile-avatar"
+        src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+      >
+
+      <p>Name: Getflix User</p>
+      <p>Email: user@getflix.com</p>
+
+      <button onclick="closePages()">
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- SETTINGS PAGE -->
+
+  <div id="settings-page" class="popup-page">
+
+    <div class="popup-content">
+
+      <h1>Settings</h1>
+
+      <p>Dark Mode : Enabled</p>
+      <p>Video Quality : HD</p>
+      <p>Language : English</p>
+
+      <button onclick="closePages()">
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- BANNER -->
+
+  <header class="banner">
+
+    <div class="banner-content">
+
+      <h1 class="banner-title">Money Heist</h1>
+
+      <p class="banner-description">
+        A criminal mastermind who goes by "The Professor"
+        has a plan to pull off the biggest heist in recorded history.
+      </p>
+
+      <div class="banner-buttons">
+
+        <button class="play-btn">▶ Play</button>
+        <button class="info-btn">More Info</button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- ROW 1 -->
+
+  <div class="row">
+
+    <h2>Trending Now</h2>
+
+    <div class="row-posters">
+
+      <a href="https://www.netflix.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg">
+      </a>
+
+      <a href="https://www.primevideo.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg">
+      </a>
+
+      <a href="https://www.hotstar.com/in" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg">
+      </a>
+
+      <a href="https://www.youtube.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg">
+      </a>
+
+      <a href="https://www.netflix.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg">
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- ROW 2 -->
+
+  <div class="row">
+
+    <h2>Top Rated</h2>
+
+    <div class="row-posters">
+
+      <img class="poster"
+      src="https://image.tmdb.org/t/p/w500/6KErczPBROQty7QoIsaa6wJYXZi.jpg">
+
+      <img class="poster"
+      src="https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg">
+
+      <img class="poster"
+      src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg">
+
+      <img class="poster"
+      src="https://image.tmdb.org/t/p/w500/5BwqwxMEjeFtdknRV792Svo0K1v.jpg">
+
+      <img class="poster"
+      src="https://image.tmdb.org/t/p/w500/aNtAP8ZzUMdnCPoqYgVOcgI0Eh4.jpg">
+
+    </div>
+
+  </div>
+
+  <!-- ROW 3 -->
+
+  <div class="row">
+
+    <h2>Top Anime</h2>
+
+    <div class="row-posters">
+
+      <a href="https://www.crunchyroll.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg">
+      </a>
+
+      <img class="poster"
+      src="img/row3/1.jpg">
+
+      <img class="poster"
+      src="img/row3/3.jpg">
+
+      <a href="https://www.crunchyroll.com/" target="_blank">
+        <img class="poster"
+        src="https://image.tmdb.org/t/p/w500/cMD9Ygz11zjJzAovURpO75Qg7rT.jpg">
+      </a>
+
+      <img class="poster"
+      src="img/row3/5.jpg">
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    © 2026 GETFLIX. All Rights Reserved.
+
+  </footer>
+
+  <!-- JAVASCRIPT -->
+
+  <script>
+
+    function profilePage(){
+
+      document.getElementById("profile-page").style.display = "flex";
+
+    }
+
+    function settingsPage(){
+
+      document.getElementById("settings-page").style.display = "flex";
+
+    }
+
+    function closePages(){
+
+      document.getElementById("profile-page").style.display = "none";
+
+      document.getElementById("settings-page").style.display = "none";
+
+    }
+
+    function logout(){
+
+      window.location.href = "login.html";
+
+    }
+
+  </script>
+
+</body>
+</html>
